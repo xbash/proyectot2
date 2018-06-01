@@ -9,9 +9,87 @@ function borrar(){
 function refresca(){
 	 window.location= "mapa2.html";
 }
-function mos (){
-	console.log (lat);
-	console.log (lng);
+function enviar(){
+	var usu = document.getElementById('Nombre').value;
+	var clave = document.getElementById('clave').value;
+	var email = document.getElementById('email').value;
+	
+	var fun = 1;
+	if (usu ==''|| clave==''|| email==''){
+		alert("no ha ingresado todos los valores");
+	}else{
+		$.ajax({
+			cache: false,
+			// puede ser GET, POST
+			type: 'POST',  							
+			// Tipo de retorno
+			dataType: 'html',
+			// pagina php que recibe la llamada
+			url:'ws/base.php',  							
+			// datos, ej: $_POST['data'
+			data: {
+				$fun:fun,
+				$clave:clave,
+				$email:email,
+				$user:usu
+				},
+			 success: function(dato){
+				if (dato==1){
+						alert ("valore agregados correctamente");
+						document.getElementById('Nombre').value='';
+						document.getElementById('clave').value='';
+						document.getElementById('email').value='';
+				 }
+				 if(dato==2) {
+					alert ("Usuario ya existe, intente con otro usuario");
+				 }
+				 if (dato==0){
+					 alert ("Nombre o Usuario son incorrectos, intentelo de nuevo");
+				 }
+				 else {
+			 $("#info").text(dato);
+		 }},
+		 error: function(xhr, status,msg2 ){
+                    //alert('4');			
+                    console.log(xhr)
+				 }
+				 
+		});//fin ajax
+	}
+}
+/*function mos(){
+	//Access-Control-Allow-Origin: *;
+	var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -34.397, lng: 150.644},
+          zoom: 20
+        });
+		lat: position.coords.latitude;
+              lng: position.coords.longitude;
+              lati= -33.6488897;
+              lngi= lng: -70.779265;
+	var infoWindow = new google.maps.InfoWindow({map: map});
+	          navigator.geolocation.getCurrentPosition( function(position) {
+            var pos=[
+					lat,lng,lati,lngi];
+			for (var x=0;x<2;x++ ){
+				
+			
+            infoWindow.setPosition(pos);
+            infoWindow.setContent('oferta!!.');
+          },);
+		   navigator.geolocation.getCurrentPosition( function(position) {
+				var apos = {
+			lat: -33.6488897, lng: -70.7792655
+            };
+            infoWindow.setPosition(apos);
+            infoWindow.setContent('otra oferta.');
+            map.setCenter(apos);
+		    console.log(apos);
+          },);
+}*/
+
+function registro(){
+	window.location="registro.html";
 }
 function mostrar(){
 	var pos;
@@ -19,71 +97,62 @@ function mostrar(){
 	function exito(position){
               lat= position.coords.latitude;
               lng= position.coords.longitude;
+			  fun = 2;
 			  console.log(lng);
 		   $.ajax({
 			cache: false,
 			// puede ser GET, POST
 			type: "POST",  							
 			// Tipo de retorno
-			dataType: "html",
+			dataType: "json",
 			// pagina php que recibe la llamada
-			url:"http://localhost/intento/ws/base.php",  							
+			url:"base.php",  							
 			// datos, ej: $_POST['data'
 			data: {
 				lat:lat,
 				lng:lng
 				},
-			 success: function(){
-                   console.log('bkn');
-                 // alert (data);
-				  window.location= "foto.html";
-			 },
-			 error: function(xhr, status,msg2 ){
+			success: function(dato){
+					if (dato==1){
+						alert ("valore agregados correctamente");
+				 }else {
+					 alert ("Nombre o Usuario son incorrectos, intentelo de nuevo");
+						$("#result").text(dato);
+				 }},error: function(xhr, status,msg2 ){
                     //alert('4');			
-                    console.log(xhr);
-			 }
+                    console.log(xhr)
+				 }
 		});//fin ajax
-} function error(){
-		   alert('error');
-	}
+} 
 }
 function hacer(){
-	var nombre = "jose";
-	var $user = document.getElementById('nombre').value;
-	var $rut = document.getElementById('rut').value;
-		
-		$.ajax({
-			//cache: false,
+	var nom = document.getElementById('nom').value;
+	var cla = document.getElementById('cla').value;
+	var fun = 0;
+	$.ajax({
+			cache: false,
 			// puede ser GET, POST
-			type: "POST",  							
+			type: 'POST',  							
 			// Tipo de retorno
-			dataType: "html",
+			dataType: 'html',
 			// pagina php que recibe la llamada
-			url:"http://localhost/intento/ws/base.php",  							
+			url:'ws/base.php',  							
 			// datos, ej: $_POST['data'
 			data: {
-				$user:$user,
-				$rut:$rut
+				$fun:fun,
+				$nom:nom,
+				$contra:cla
 				},
-			 success: function(){
-                console.log("conectado");
-				
-			// window.location= "foto.html";
-			 },
-			 error: function(xhr, status,msg2 ){
+				 success: function(dato){
+					if (dato==1){
+						window.location = "mapa2.html";
+				 }else {
+					 alert ("Nombre o Usuario son incorrectos, intentelo de nuevo");
+				 }},error: function(xhr, status,msg2 ){
                     //alert('4');			
-                    console.log(xhr);
-            }
-			
+                    console.log(xhr)
+				 }
 		});//fin ajax	
-		
-		
-		/*if ($ms == 1){
-			alert('conectado');
-			window.location="foto.html";
-		}else {
-			alert ('nombre o rut erroneos, favor intentelo de nuevo ');
-		}*/
 }
 function soloLetras(e)
 {
@@ -99,11 +168,6 @@ function soloLetras(e)
 		return false;
 	}
 }
-function saludar(){
-		var nombre = document.getElementById('nombre').value;
-	alert(" " + nombre);
-				
-}
 //function soloNumeros(evt)
 function soloNumeros(e)
 {
@@ -118,92 +182,9 @@ function validaralpha(e)
 { 
 	tecla = (document.all) ? e.keyCode : e.which; 
 	if (tecla==8) return true; 
-	patron =/[\ w\w.&ñ]/;//este acepta espacios entre medio, si se quiere eliminar los espacios poner [\w] 
+	patron =/[\w.&ñ]/;//este acepta espacios entre medio, si se quiere eliminar los espacios poner [\w] 
 	te = String.fromCharCode(tecla); 
 	return patron.test(te);
-}
-
-function operacion()
-{
-	var select=$("#operacion option:selected").val();//text() para texto de select option
-	var nro1=document.getElementById('nro1').value;
-	var nro2=document.getElementById('nro2').value;
-	if(nro1=='' || nro2=='')
-	{
-		alert('Debe Ingresar los valores!');
-	}
-	else
-	{
-	//alert(select);
-	if(select==0)
-	{
-		alert('Debe seleccionar Operación!!!');
-	}
-	else if(select==1)
-	{
-		funcion='suma';
-	}
-	else if(select==2)
-	{
-		funcion='resta';
-	}
-	else if(select==3)
-	{
-		funcion='mult';
-	}
-	else if(select==4)
-	{
-		funcion='division';
-	}
-	if(select > 0)
-	{		
-		//alert(funcion);
-		$.ajax({
-		cache: false,
-		// puede ser GET, POST
-		type: "POST",  							
-		// Tipo de retorno
-		dataType: "html",
-		// pagina php que recibe la llamada
-		url: "http://72.14.183.67/ws/",  							
-		// datos, ej: $_POST['data']
-		data: {
-			funcion:funcion,
-			n1:nro1,
-			n2:nro2				
-		},
-		beforeSend: function(){  
-                    document.getElementById('divCargando').style.display="block";
-                    $("#labelCargando").html('Cargando...');	
-		},
-		// acciones cuando me retorna algo el PHP
-		success: function( msg){
-			//console.log(msg);
-                        document.getElementById('divCargando').style.display="none";
-			if(msg=='error')
-			{
-				alert('Ha ocurrido un Error.');
-			}
-			else if(msg=='cero')
-			{
-				alert('Error!, Nro2 no puede ser cero.');
-                                reiniciar();
-			}
-			else
-			{
-				document.getElementById('divResultado').style.display="block";
-				$("#labelResultado").html('Resultado de la '+$("#operacion option:selected").text()+' es = '+msg);
-				
-			}
-		},							
-		// acciones cuando hay error en comunicacion el el php
-		error: function(xhr, status,msg2 ){
-			//alert('4');			
-			console.log(xhr);
-		}
-	});//fin ajax
-	}//fin else
-	}
 }
 
 function reiniciar()
@@ -213,4 +194,25 @@ function reiniciar()
 	$("#operacion").val(0);
 	document.getElementById('divResultado').style.display="none";
         document.getElementById('divCargando').style.display="none";
+}
+
+function validarEmail(email)
+{
+	//Creamos un objeto 
+	object=document.getElementById(email);
+	valueForm=object.value;
+ 
+	// Patron para el correo
+	var patron=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{1,2})+$/;
+	if(valueForm.search(patron)==0)
+	{
+		//Mail correcto
+		object.style.color="#000";
+		$("#info").text("Email correcto");
+		return;
+	}
+	//Mail incorrecto
+	object.style.color="#f00";
+	$("#info").text("Email erroneo");
+
 }

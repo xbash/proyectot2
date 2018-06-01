@@ -19,18 +19,18 @@
       html, body {
         height: 100%;
         margin: 0;
-        padding: 0;
+        padding: 2%;
       }
-    </style>
-  </head>
+    </style>  </head>
   <body>
   <input type="button" value="refrescar "  style="width: 100%" onclick="refresca();">
    <input type="button" value="mostrar"  style="width: 100%" onclick="mostrar();">
 	<a href="index.html">
 		<input type="button" value="volver"  style="width: 100%">
 		</a>
-	
-    <div id="map"></div>
+    <div id="map">
+
+	</div>
     <script>
       // Note: This example requires that you consent to location sharing when
       // prompted by your browser. If you see the error "The Geolocation service
@@ -57,6 +57,7 @@
             map.setCenter(pos);
 		    console.log(pos);
           },
+         
 		  function() {
             handleLocationError(true, infoWindow, map.getCenter());
           });
